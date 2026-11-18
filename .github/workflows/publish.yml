@@ -1,0 +1,26 @@
+# Publishes this repository to Yukibana Cloud as a release of every project
+# linked to it, when a tag like v1 is pushed (or by hand, from the Actions
+# tab). No token or secret is needed: the job proves which repository it runs
+# in with GitHub's OIDC token, and the cloud publishes only to the projects
+# whose owners linked this repository on their project page.
+name: Publish to Yukibana
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Yukibana-Ed/Yukibana/action@main
+        with:
+          url: https://cloud.yukibana.dev
+          label: ${{ github.ref_name }}
